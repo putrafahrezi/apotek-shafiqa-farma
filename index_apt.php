@@ -74,7 +74,7 @@
   </div>
   <!-- /.content-wrapper -->
   
-  <?php include_once('footer.php')?>
+  <?php include_once('footer_apt.php')?>
 
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
