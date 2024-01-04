@@ -77,7 +77,7 @@ if($hitung > 0){
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="index.php"><b>Admin</b>LTE</a>
+    <a href="index_apt.php"><b>Admin</b>LTE</a>
   </div>
   <!-- /.login-logo -->
   <?php
