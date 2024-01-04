@@ -33,7 +33,7 @@
           <a href="#" class="nav-link">
               <i class="nav-icon fas fa-solid fa-users"></i>
               <p>
-                Mahasiswa
+                Data Pasien
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
@@ -64,7 +64,7 @@
           <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-solid fa-list"></i>
               <p>
-                Jurusan
+                Data Obat
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
