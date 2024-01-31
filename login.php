@@ -51,7 +51,7 @@
               <input name="password" type="password" class="form-control" placeholder="password" onkeyup="validate();" required>
             </div> <!-- input-group class -->
             <div class="form-group">
-              <button class="btn btn-default btn-block btn-custom">Login</button>
+              <button class="btn btn-default btn-block btn-custom"><b>Login</b></button>
             </div>
           </form><!-- form close -->
 
