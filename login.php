@@ -1,78 +1,141 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>apotek shafiqa farma - Login</title>
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-		<script src="bootstrap/js/jquery.min.js"></script>
-		<script src="bootstrap/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-    <link rel="shortcut icon" href="images/icon.svg" type="image/x-icon">
-    <link rel="stylesheet" href="css/index.css">
-    <script src="js/index.js"></script>
-    <script src="js/validateForm.js"></script>
+<?php
+session_start();
+$pesan ="";
+
+if(isset($_POST['tombol'])){
+
+  //1. Koneksi data ke database 
+  include_once("db_connection.php");
+
+  //2. Mengambil Nilai Dari Input
+  $email =$_POST['email'];
+  $password = md5($_POST['password']);
+
+  //3. Menjalankan Query
+  $qry = "SELECT * FROM users WHERE email='$email' AND password='$password'";
+
+  //4. Jalankan Query
+  $result = mysqli_query($con,$qry);
+
+  //5. menghitung jumlah hasil query
+  $hitung = mysqli_num_rows($result);
+
+  if($hitung){
+    //Proses Login
+
+    // Mengambil seluruh Data Login
+    $data = mysqli_fetch_array($result);
+    $id   = $data ['id'];
+    $nama = $data ['nama'];
+
+    if($_POST['ingat'] == "yes"){
+      //pembutan cookie
+      setcookie("cid",$id, time() + (60*60*24*3), "/");
+      setcookie("cnama",$nama, time() + (60*60*24*3), "/");
+      setcookie("cemail",$email, time() + (60*60*24*3), "/");
+
+    }else{
+    // Pembuatan session
+    $_SESSION['sid'] = $id;
+    $_SESSION['snama'] = $nama;
+    $_SESSION['semail'] = $email;
+
+    }
+
+    // Update Las_LOG
+    $qry_update = "UPDATE users SET last_log=now() WHERE id= '$id'";
+    $res_update = mysqli_query($con, $qry_update);
+
+    //Pengalihan Ke Halaman Index 
+  ?>
     <script>
-      var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function() {
-        if(xhttp.readyState = 4 && xhttp.status == 200)
-          xhttp.responseText;
-      };
-      xhttp.open("GET", "php/db_connection.php?action=is_logged_in", false);
-      xhttp.send();
-
-      //alert(xhttp.responseText);
-      if(xhttp.responseText == "")
-        window.location.href = "http://localhost/Pharmacy-Management/index.html";
-      if(xhttp.responseText == "true")
-        window.location.href = "http://localhost/Pharmacy-Management/home.php";
-
+        document.location="index.php";
     </script>
-  </head>
-  <body>
-    <div class="container">
+  <?php
 
-      <div id="login-form" class="card m-auto p-2">
-        <div class="card-body">
-          <form name="login-form" class="login-form" action="home.php" method="post" onsubmit="return validateCredentials();">
-            <div class="logo">
-        			<img src="images/prof.jpg" class="profile"/>
-        			<h1 class="logo-caption"><span class="tweak">L</span>ogin</h1>
-        		</div> <!-- logo class -->
-            <div class="input-group form-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-user text-white"></i></span>
-              </div>
-              <input name="username" type="text" class="form-control" placeholder="username" onkeyup="validate();" required>
-            </div> <!--input-group class -->
-            <div class="input-group form-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-key text-white"></i></span>
-              </div>
-              <input name="password" type="password" class="form-control" placeholder="password" onkeyup="validate();" required>
-            </div> <!-- input-group class -->
-            <div class="form-group">
-              <button class="btn btn-default btn-block btn-custom"><b>Login</b></button>
+  }else{
+    //login gagal
+      $pesan ='<div class="alert alert-danger" role="alert">Login Tidak Valid.</div>';
+  }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AdminLTE 3 | Log in</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <a href="../../index2.html"><b>Admin</b>LTE</a>
+  </div>
+  <!-- /.login-logo -->
+  <?php
+   echo $pesan
+  ?>
+  
+  <div class="card">
+    <div class="card-body login-card-body">
+      <p class="login-box-msg">Sign in to start your session</p>
+
+      <form action="login.php" method="post">
+        <div class="input-group mb-3">
+          <input type="email" name="email" class="form-control" placeholder="Email">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-envelope"></span>
             </div>
-          </form><!-- form close -->
-
-        </div> <!-- cord-body class -->
-        <div class="card-footer">
-          <div class="text-center">
-            <a class="text-light" onclick="displayForgotPasswordForm();" style="cursor: pointer;">Forgot password?</a>
           </div>
-        </div> <!-- cord-footer class -->
-      </div> <!-- card class -->
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" name="password" class="form-control" placeholder="Password">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-8">
+            <div class="icheck-primary">
+              <input type="checkbox" id="remember" name="ingat" value="yes">
+              <label for="remember">
+                Remember Me
+              </label>
+            </div>
+          </div>
+          <!-- /.col -->
+          <div class="col-4">
+            <button type="submit" name="tombol" class="btn btn-primary btn-block">Sign In</button>
+          </div>
+          <!-- /.col -->
+        </div>
+      </form>
 
-      <div id="forgot-password-form" class="card m-auto p-2" style="display: none;">
-        <div class="card-body">
-          <div name="login-form" class="login-form">
-            <div class="logo">
-              <img src="images/prof.jpg" class="profile"/>
-              <h1 class="logo-caption"><span class="tweak">F</span>orget <span class="tweak">P</span>assword</h1>
-            </div> <!-- logo class -->
-        </div> <!-- cord-footer class -->
-      </div> <!-- card class -->
 
-    </div> <!-- container class -->
-  </body>
+    
+    </div>
+    <!-- /.login-card-body -->
+  </div>
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script src="plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="dist/js/adminlte.min.js"></script>
+</body>
 </html>
